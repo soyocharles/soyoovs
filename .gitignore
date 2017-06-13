@@ -74,3 +74,17 @@ testsuite.tmp.orig
 /tests/lcov/
 /Documentation/_build
 /.venv
+/include/openvswitch/soyotest.c
+/include/openvswitch/a
+/soyotest
+/grep
+/nbproject/
+/nbproject/configurations.xml
+/nbproject/private/CodeAssistancePathMapper.properties
+/nbproject/private/Default.properties
+/nbproject/private/c_standard_headers_indexer.c
+/nbproject/private/configurations.xml
+/nbproject/private/cpp_standard_headers_indexer.cpp
+/nbproject/private/launcher.properties
+/nbproject/private/private.xml
+/nbproject/project.xml

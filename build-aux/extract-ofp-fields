@@ -631,9 +631,11 @@ def group_xml_to_nroff(group_node, fields):
 
     summary = []
     body = []
+    print group_node.tagName
     for node in group_node.childNodes:
         if node.nodeType == node.ELEMENT_NODE and node.tagName == 'field':
             id_ = node.attributes['id'].nodeValue
+            print id_
             field_to_xml(node, fields[id_], body, summary)
         else:
             body += [build.nroff.block_xml_to_nroff([node])]

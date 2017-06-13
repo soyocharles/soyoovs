@@ -1581,6 +1581,99 @@ enum OVS_PACKED_ENUM mf_field_id {
      */
     MFF_ND_TLL,
 
+/* ## --- ## */
+/* ## GTP ## */
+/* ## --- ## */  
+    
+    /* "gtp_flags".
+     *
+     * GTP flags.
+     *
+     * Type: u8.
+     * Maskable: bitwise.
+     * Formatting: decimal.
+     * Prerequisites: UDP.
+     * Access: read/write.
+     * NXM: NXM_OF_GTP_FLAGS(101) since v2.7.
+     * OXM: none.
+     */
+    MFF_GTP_FLAGS,
+    
+    /* "gtp_message_type".
+     *
+     * GTP Message Type.
+     *
+     * Type: u8.
+     * Maskable: bitwise.
+     * Formatting: decimal.
+     * Prerequisites: UDP.
+     * Access: read/write.
+     * NXM: NXM_OF_GTP_MESSAGE_TYPE(102) since v2.7.
+     * OXM: none.
+     */    
+    MFF_GTP_MESSAGE_TYPE,
+    
+    /* "gtp_teid".
+     *
+     * GTP Tunnel endpoint identifier (TEID).
+     *
+     * Type: be32.
+     * Maskable: bitwise.
+     * Formatting: decimal.
+     * Prerequisites: UDP.
+     * Access: read/write.
+     * NXM: NXM_OF_GTP_TEID(103) since v2.7.
+     * OXM: none.
+     */    
+    MFF_GTP_TEID,
+    
+    /* "gtp_sequence_number".
+     *
+     * GTP Sequence number.
+     *
+     * Type: be16.
+     * Maskable: bitwise.
+     * Formatting: decimal.
+     * Prerequisites: UDP.
+     * Access: read/write.
+     * NXM: NXM_OF_GTP_SEQQUENCE_NUMBER(104) since v2.7.
+     * OXM: none.
+     */    
+    MFF_GTP_SEQUENCE_NUMBER,
+    
+/* ## ---- ## */
+/* ## TPDU ## */
+/* ## ---- ## */
+    
+    /* "tpdu_ipv4_src".
+     *
+     * GTP-U IPv4 source address in T-PDU.
+     *
+     * Type: be32.
+     * Maskable: bitwise.
+     * Formatting: decimal.
+     * Prerequisites: UDP.
+     * Access: read/write.
+     * NXM: NXM_OF_TPDU_IPV4_SRC(105) since v2.7.
+     * OXM: none.
+     */
+    MFF_TPDU_IPV4_SRC,
+    
+    /* "tpdu_ipv4_dst".
+     *
+     * GTP-U IPv4 destination address in T-PDU.
+     *
+     * Type: be32.
+     * Maskable: bitwise.
+     * Formatting: decimal.
+     * Prerequisites: UDP.
+     * Access: read/write.
+     * NXM: NXM_OF_TPDU_IPV4_DST(106) since v2.7.
+     * OXM: none.
+     */
+    MFF_TPDU_IPV4_DST,
+    
+    
     MFF_N_IDS
 };
 

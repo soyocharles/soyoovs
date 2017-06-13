@@ -164,6 +164,19 @@ void match_set_nd_target(struct match *, const struct in6_addr *);
 void match_set_nd_target_masked(struct match *, const struct in6_addr *,
                                 const struct in6_addr *);
 
+void match_set_gtp_flags(struct match *match, uint8_t gtp_flags);
+void match_set_gtp_flags_masked(struct match *match, uint8_t gtp_flags, uint8_t mask);
+void match_set_gtp_message_type(struct match *match, uint8_t gtp_message_type);
+void match_set_gtp_message_type_masked(struct match *match, uint8_t gtp_message_type, uint8_t mask);
+void match_set_gtp_teid(struct match *match, ovs_be32 gtp_teid);
+void match_set_gtp_teid_masked(struct match *match, ovs_be32 gtp_teid, ovs_be32 mask);
+void match_set_gtp_sequence_number(struct match *match, ovs_be16 gtp_sequence_number);
+void match_set_gtp_sequence_number_masked(struct match *match, ovs_be32 gtp_sequence_number, ovs_be32 mask);
+void match_set_tpdu_ipv4_src(struct match *match, ovs_be32 tpdu_ipv4_src);
+void match_set_tpdu_ipv4_src_masked(struct match *match, ovs_be32 tpdu_ipv4_src, ovs_be32 mask);
+void match_set_tpdu_ipv4_dst(struct match *match, ovs_be32 tpdu_ipv4_dst);
+void match_set_tpdu_ipv4_dst_masked(struct match *match, ovs_be32 tpdu_ipv4_dst, ovs_be32 mask);
+
 bool match_equal(const struct match *, const struct match *);
 uint32_t match_hash(const struct match *, uint32_t basis);
 

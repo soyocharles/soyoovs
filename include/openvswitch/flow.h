@@ -127,6 +127,21 @@ struct flow {
     ovs_be16 tp_dst;            /* TCP/UDP/SCTP destination port/ICMP code. */
     ovs_be32 igmp_group_ip4;    /* IGMP group IPv4 address.
                                  * Keep last for BUILD_ASSERT_DECL below. */
+    
+    /* L5 gtp (64-bit aligned) */
+    uint8_t gtp_flags;          /* Version
+                                 * Protocol Type (PT)
+                                 * Reserved
+                                 * Extension header flag(E)
+                                 * Sequence number flag(S)
+                                 * N-PDU number flag(PN)
+                                 */
+    uint8_t gtp_message_type;   /*Message Type*/
+    ovs_be16 gtp_sequence_number;   /*Sequence number*/
+    ovs_be32 gtp_teid;              /*Tunnel endpoint identifier (TEID)*/
+    ovs_be32 tpdu_ipv4_src;     /* IPv4 source address in T-PDU*/
+    ovs_be32 tpdu_ipv4_dst;     /* IPv4 destination address or in T-PDU*/   
+    
 };
 BUILD_ASSERT_DECL(sizeof(struct flow) % sizeof(uint64_t) == 0);
 BUILD_ASSERT_DECL(sizeof(struct flow_tnl) % sizeof(uint64_t) == 0);

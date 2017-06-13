@@ -560,7 +560,7 @@ miniflow_extract(struct dp_packet *packet, struct miniflow *dst)
                          values + FLOW_U64S };
     const char *l2;
     ovs_be16 dl_type;
-    uint8_t nw_frag, nw_tos, nw_ttl, nw_proto;
+    uint8_t nw_frag, nw_tos, nw_ttl, nw_proto, is_udp;
 
     /* Metadata. */
     if (flow_tnl_dst_is_set(&md->tunnel)) {
@@ -759,6 +759,8 @@ miniflow_extract(struct dp_packet *packet, struct miniflow *dst)
     miniflow_push_be32(mf, nw_frag,
                        BYTES_TO_BE32(nw_frag, nw_tos, nw_ttl, nw_proto));
 
+    is_udp = 0;
+    ovs_be16 dst_port_number;
     if (OVS_LIKELY(!(nw_frag & FLOW_NW_FRAG_LATER))) {
         if (OVS_LIKELY(nw_proto == IPPROTO_TCP)) {
             if (OVS_LIKELY(size >= TCP_HEADER_LEN)) {
@@ -770,6 +772,9 @@ miniflow_extract(struct dp_packet *packet, struct miniflow *dst)
                 miniflow_push_be16(mf, tp_src, tcp->tcp_src);
                 miniflow_push_be16(mf, tp_dst, tcp->tcp_dst);
                 miniflow_pad_to_64(mf, tp_dst);
+                
+                // here
+                dst_port_number = tcp->tcp_dst;
             }
         } else if (OVS_LIKELY(nw_proto == IPPROTO_UDP)) {
             if (OVS_LIKELY(size >= UDP_HEADER_LEN)) {
@@ -778,6 +783,11 @@ miniflow_extract(struct dp_packet *packet, struct miniflow *dst)
                 miniflow_push_be16(mf, tp_src, udp->udp_src);
                 miniflow_push_be16(mf, tp_dst, udp->udp_dst);
                 miniflow_pad_to_64(mf, tp_dst);
+                
+                //here
+                dst_port_number = udp->udp_dst;
+                data_pull(&data, &size, UDP_HEADER_LEN);
+                is_udp = FLOW_NW_FRAG_ANY;
             }
         } else if (OVS_LIKELY(nw_proto == IPPROTO_SCTP)) {
             if (OVS_LIKELY(size >= SCTP_HEADER_LEN)) {
@@ -822,6 +832,27 @@ miniflow_extract(struct dp_packet *packet, struct miniflow *dst)
                 miniflow_pad_to_64(mf, tp_dst);
             }
         }
+    }
+    
+    
+    //gtp-u
+    if (OVS_LIKELY(is_udp & FLOW_NW_FRAG_ANY)) {
+        if(OVS_LIKELY(dst_port_number == GTP1U_PORT)){
+            const struct gtp1_header_long *gtpu = data;
+            miniflow_push_be16(mf, gtp_flags, 
+                    BTYES_TO_BE16(gtpu->flags, gtpu->type));
+            miniflow_push_be16(mf, gtp_sequence_number, gtpu->seq);
+            miniflow_push_be32(mf, gtp_teid, gtpu->tei);
+            data_pull(&data, &size, GTP1_HEADER_SIZE_LONG);
+            const struct ip_header * user_packet = data;
+            if(IP_VER(user_packet->ip_ihl_ver) == IP_VERSION){
+                miniflow_push_words(mf, tpdu_ipv4_src, &user_packet->ip_src, 1);
+            }
+            else{
+                goto out;
+            }
+
+        } 
     }
  out:
     dst->map = mf.map;

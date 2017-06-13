@@ -852,6 +852,86 @@ match_set_nd_target_masked(struct match *match,
     match->wc.masks.nd_target = *mask;
 }
 
+void
+match_set_gtp_flags(struct match *match, uint8_t gtp_flags)
+{
+    match->flow.gtp_flags = gtp_flags;
+    match->wc.masks.gtp_flags = UINT8_MAX;
+}
+void
+match_set_gtp_flags_masked(struct match *match, uint8_t gtp_flags, uint8_t mask)
+{
+    match->flow.gtp_flags = gtp_flags & mask;
+    match->wc.masks.gtp_flags = mask;
+}
+
+void
+match_set_gtp_message_type(struct match *match, uint8_t gtp_message_type)
+{
+    match->flow.gtp_message_type = gtp_message_type;
+    match->wc.masks.gtp_message_type = UINT8_MAX;
+}
+void
+match_set_gtp_message_type_masked(struct match *match, uint8_t gtp_message_type, uint8_t mask)
+{
+    match->flow.gtp_message_type = gtp_message_type & mask;
+    match->wc.masks.gtp_message_type = mask;
+}
+
+
+void
+match_set_gtp_teid(struct match *match, ovs_be32 gtp_teid)
+{
+    match->flow.gtp_teid = gtp_teid;
+    match->wc.masks.gtp_teid = UINT32_MAX;
+}
+void
+match_set_gtp_teid_masked(struct match *match, ovs_be32 gtp_teid, ovs_be32 mask)
+{
+    match->flow.gtp_teid = gtp_teid & mask;
+    match->wc.masks.gtp_teid = mask;
+}
+
+void
+match_set_gtp_sequence_number(struct match *match, ovs_be16 gtp_sequence_number)
+{
+    match->flow.gtp_sequence_number = gtp_sequence_number;
+    match->wc.masks.gtp_sequence_number = UINT16_MAX;
+}
+void
+match_set_gtp_sequence_number_masked(struct match *match, ovs_be32 gtp_sequence_number, ovs_be32 mask)
+{
+    match->flow.gtp_sequence_number = gtp_sequence_number & mask;
+    match->wc.masks.gtp_sequence_number = mask;
+}
+
+void
+match_set_tpdu_ipv4_src(struct match *match, ovs_be32 tpdu_ipv4_src)
+{
+    match->flow.tpdu_ipv4_src = tpdu_ipv4_src;
+    match->wc.masks.tpdu_ipv4_src = OVS_BE32_MAX;
+}
+
+void
+match_set_tpdu_ipv4_src_masked(struct match *match,
+                        ovs_be32 tpdu_ipv4_src, ovs_be32 mask)
+{
+    match->flow.tpdu_ipv4_src = tpdu_ipv4_src & mask;
+    match->wc.masks.tpdu_ipv4_src = mask;
+}
+void
+match_set_tpdu_ipv4_dst(struct match *match, ovs_be32 tpdu_ipv4_dst)
+{
+    match->flow.tpdu_ipv4_dst = tpdu_ipv4_dst;
+    match->wc.masks.tpdu_ipv4_dst = OVS_BE32_MAX;
+}
+void
+match_set_tpdu_ipv4_dst_masked(struct match *match,
+                        ovs_be32 tpdu_ipv4_dst, ovs_be32 mask)
+{
+    match->flow.tpdu_ipv4_dst = tpdu_ipv4_dst & mask;
+    match->wc.masks.tpdu_ipv4_dst = mask;
+}
 /* Returns true if 'a' and 'b' wildcard the same fields and have the same
  * values for fixed fields, otherwise false. */
 bool

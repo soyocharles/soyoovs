@@ -341,7 +341,20 @@ mf_is_all_wild(const struct mf_field *mf, const struct flow_wildcards *wc)
         return !wc->masks.tp_dst;
     case MFF_TCP_FLAGS:
         return !wc->masks.tcp_flags;
-
+        
+    case MFF_GTP_FLAGS:
+        return !wc->masks.gtp_flags;
+    case MFF_GTP_MESSAGE_TYPE:
+        return !wc->masks.gtp_message_type;        
+    case MFF_GTP_TEID:
+        return !wc->masks.gtp_teid;
+    case MFF_GTP_SEQUENCE_NUMBER:
+        return !wc->masks.gtp_sequence_number;
+    case MFF_TPDU_IPV4_SRC:
+        return !wc->masks.tpdu_ipv4_src;
+    case MFF_TPDU_IPV4_DST:
+        return !wc->masks.tpdu_ipv4_dst;
+        
     case MFF_N_IDS:
     default:
         OVS_NOT_REACHED();
@@ -486,6 +499,12 @@ mf_is_value_valid(const struct mf_field *mf, const union mf_value *value)
     case MFF_ND_TARGET:
     case MFF_ND_SLL:
     case MFF_ND_TLL:
+    case MFF_GTP_FLAGS:
+    case MFF_GTP_MESSAGE_TYPE:
+    case MFF_GTP_TEID:
+    case MFF_GTP_SEQUENCE_NUMBER:
+    case MFF_TPDU_IPV4_SRC:
+    case MFF_TPDU_IPV4_DST:
         return true;
 
     case MFF_IN_PORT_OXM:
@@ -780,7 +799,26 @@ mf_get_value(const struct mf_field *mf, const struct flow *flow,
     case MFF_ND_TARGET:
         value->ipv6 = flow->nd_target;
         break;
-
+        
+    case MFF_GTP_FLAGS:
+        value->u8 = flow->gtp_flags;
+        break;    
+    case MFF_GTP_MESSAGE_TYPE:
+        value->u8 = flow->gtp_message_type;
+        break;     
+    case MFF_GTP_TEID:
+        value->be32 = flow->gtp_teid;
+        break;     
+    case MFF_GTP_SEQUENCE_NUMBER:
+        value->be16 = flow->gtp_sequence_number;
+        break;     
+    case MFF_TPDU_IPV4_SRC:
+        value->be32 = flow->tpdu_ipv4_src;
+        break;     
+    case MFF_TPDU_IPV4_DST:
+        value->be32 = flow->tpdu_ipv4_dst;
+        break; 
+   
     case MFF_N_IDS:
     default:
         OVS_NOT_REACHED();
@@ -1042,7 +1080,25 @@ mf_set_value(const struct mf_field *mf,
     case MFF_ND_TARGET:
         match_set_nd_target(match, &value->ipv6);
         break;
-
+       
+    case MFF_GTP_FLAGS:
+        match_set_gtp_flags(match, value->u8);
+        break;    
+    case MFF_GTP_MESSAGE_TYPE:
+        match_set_gtp_message_type(match, value->u8);
+        break;     
+    case MFF_GTP_TEID:
+        match_set_gtp_teid(match, value->be32);
+        break;     
+    case MFF_GTP_SEQUENCE_NUMBER:
+        match_set_gtp_sequence_number(match, value->be16);
+        break;   
+    case MFF_TPDU_IPV4_SRC:
+        match_set_tpdu_ipv4_src(match, value->be32);
+        break; 
+    case MFF_TPDU_IPV4_DST:
+        match_set_tpdu_ipv4_dst(match, value->be32);
+        break; 
     case MFF_N_IDS:
     default:
         OVS_NOT_REACHED();
@@ -1376,7 +1432,24 @@ mf_set_flow_value(const struct mf_field *mf,
     case MFF_ND_TARGET:
         flow->nd_target = value->ipv6;
         break;
-
+    case MFF_GTP_FLAGS:
+        flow->gtp_flags = value->u8;
+        break;    
+    case MFF_GTP_MESSAGE_TYPE:
+        flow->gtp_message_type = value->u8;
+        break;     
+    case MFF_GTP_TEID:
+        flow->gtp_teid = value->be32;
+        break;     
+    case MFF_GTP_SEQUENCE_NUMBER:
+        flow->gtp_sequence_number = value->be16;
+        break;   
+    case MFF_TPDU_IPV4_SRC:
+        flow->tpdu_ipv4_src = value->be32;
+        break; 
+    case MFF_TPDU_IPV4_DST:
+        flow->tpdu_ipv4_dst = value->be32;
+        break;
     case MFF_N_IDS:
     default:
         OVS_NOT_REACHED();
@@ -1706,6 +1779,29 @@ mf_set_wild(const struct mf_field *mf, struct match *match, char **err_str)
                sizeof match->wc.masks.nd_target);
         memset(&match->flow.nd_target, 0, sizeof match->flow.nd_target);
         break;
+        
+    case MFF_GTP_FLAGS:
+        match->wc.masks.gtp_flags = 0;
+        match->flow.gtp_flags = 0;
+        break;    
+    case MFF_GTP_MESSAGE_TYPE:
+        match->wc.masks.gtp_message_type = 0;
+        match->flow.gtp_message_type = 0;
+        break;     
+    case MFF_GTP_TEID:
+        match->wc.masks.gtp_teid = htonl(0);
+        match->flow.gtp_teid = htonl(0);
+        break;     
+    case MFF_GTP_SEQUENCE_NUMBER:
+        match->wc.masks.gtp_sequence_number = htons(0);
+        match->flow.gtp_sequence_number = htons(0);
+        break;   
+    case MFF_TPDU_IPV4_SRC:
+        match_set_tpdu_ipv4_src_masked(match, htonl(0), htonl(0));
+        break; 
+    case MFF_TPDU_IPV4_DST:
+        match_set_tpdu_ipv4_dst_masked(match, htonl(0), htonl(0));
+        break;         
 
     case MFF_N_IDS:
     default:
@@ -1934,6 +2030,25 @@ mf_set(const struct mf_field *mf,
 
     case MFF_TCP_FLAGS:
         match_set_tcp_flags_masked(match, value->be16, mask->be16);
+        break;
+        
+    case MFF_GTP_FLAGS:
+        match_set_gtp_flags_masked(match, value->u8, mask->u8);
+        break;    
+    case MFF_GTP_MESSAGE_TYPE:
+        match_set_gtp_message_type_masked(match, value->u8, mask->u8);
+        break;     
+    case MFF_GTP_TEID:
+        match_set_gtp_teid_masked(match, value->be32, mask->be32);
+        break;     
+    case MFF_GTP_SEQUENCE_NUMBER:
+        match_set_gtp_sequence_number_masked(match, value->be16, mask->be16);
+        break;   
+    case MFF_TPDU_IPV4_SRC:
+        match_set_tpdu_ipv4_src_masked(match, htonl(0), htonl(0));
+        break; 
+    case MFF_TPDU_IPV4_DST:
+        match_set_tpdu_ipv4_dst_masked(match, htonl(0), htonl(0));
         break;
 
     case MFF_N_IDS:

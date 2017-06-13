@@ -31,6 +31,7 @@
 #include "packets.h"
 #include "hash.h"
 #include "util.h"
+#include "openvswitch/gtp.h"
 
 struct dpif_flow_stats;
 struct ds;

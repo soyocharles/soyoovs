@@ -902,6 +902,14 @@ nxm_put_ip(struct ofpbuf *b, const struct match *match, enum ofp_version oxm)
                         flow->tp_src, match->wc.masks.tp_src);
             nxm_put_16m(b, MFF_UDP_DST, oxm,
                         flow->tp_dst, match->wc.masks.tp_dst);
+            if (flow->tp_dst == GTP1U_PORT){
+                nxm_put_8(b, MFF_GTP_FLAGS, oxm, flow->gtp_flags);
+                nxm_put_8(b, MFF_GTP_MESSAGE_TYPE, oxm, flow->gtp_message_type);
+                nxm_put_32(b, MFF_GTP_TEID, oxm, flow->gtp_teid);
+                nxm_put_16(b, MFF_GTP_SEQUENCE_NUMBER, oxm, flow->gtp_sequence_number);
+                nxm_put_32m(b, MFF_TPDU_IPV4_SRC, oxm, flow->tpdu_ipv4_src, match->wc.masks.tpdu_ipv4_src);
+                nxm_put_32m(b, MFF_TPDU_IPV4_DST, oxm, flow->tpdu_ipv4_dst, match->wc.masks.tpdu_ipv4_dst);
+            }
         } else if (flow->nw_proto == IPPROTO_SCTP) {
             nxm_put_16m(b, MFF_SCTP_SRC, oxm, flow->tp_src,
                         match->wc.masks.tp_src);

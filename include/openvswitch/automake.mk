@@ -29,5 +29,5 @@ openvswitchinclude_HEADERS = \
 	include/openvswitch/uuid.h \
 	include/openvswitch/version.h \
 	include/openvswitch/vconn.h \
-	include/openvswitch/vlog.h
-
+	include/openvswitch/vlog.h\
+	include/openvswitch/gtp.h

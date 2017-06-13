@@ -4179,6 +4179,60 @@ r r c c c.
 	   title="ICMPv6 Neighbor Discovery Target Ethernet Address"/>
   </group>
 
+  <group title="Layer 5: GTP">
+    <h2>GTP-U</h2>
+    <diagram>
+      <header name="Ethernet">
+	<bits name="dst" above="48" width="0.4"/>
+	<bits name="src" above="48" width="0.4"/>
+	<bits name="type" above="16" below="0x800" width="0.4"/>
+      </header>
+      <header name="IPv4">
+	<bits name="..." width="0.4"/>
+	<bits name="proto" above="8" below="1" width="0.3"/>
+	<bits name="src" above="32" width="0.4"/>
+	<bits name="dst" above="32" width="0.4"/>
+      </header>
+      <header name="UDP">
+	<bits name="src" above="16" width=".2"/>
+	<bits name="dst" above="16" width=".2"/>
+	<bits name="..." width=".4"/>
+      </header>
+      <dots/>
+    </diagram>
+    <field id="MFF_GTP_FLAGS" title="GTP FLAGS">
+      <p>
+        gtp flags: versions etc.
+      </p>
+    </field>
+    <field id="MFF_GTP_MESSAGE_TYPE" title="GTP message type">
+      <p>
+        255 for gtp u
+      </p>
+    </field>
+    <field id="MFF_GTP_TEID" title="GTP Tunnel endpoint identifier">
+      <p>
+        GTP Tunnel endpoint identifier
+      </p>
+    </field>
+     <field id="MFF_GTP_SEQUENCE_NUMBER" title="MFF_GTP_SEQUENCE_NUMBER">
+      <p>
+        GTP Tunnel endpoint identifier
+      </p>
+    </field>
+     <field id="MFF_TPDU_IPV4_SRC" title="MFF_TPDU_IPV4_SRC">
+      <p>
+        GTP Tunnel endpoint identifier
+      </p>
+    </field>
+    <field id="MFF_TPDU_IPV4_DST" title="MFF_TPDU_IPV4_DST">
+      <p>
+        GTP Tunnel endpoint identifier
+      </p>
+    </field>
+
+  </group>
+
   <h1>References</h1>
 
   <dl>
